@@ -173,7 +173,6 @@ public class TotemPlayerHandle {
                 } else if (Serverplayer.getDeltaMovement().y == 0) {
                     Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().add(0, 40,0));
                 }
-                System.out.println("dont jump!!!!");
             } else {
                 isInVoid = false;
             }
