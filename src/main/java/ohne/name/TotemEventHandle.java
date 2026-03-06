@@ -1,0 +1,45 @@
+package ohne.name;
+
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+
+
+public class TotemEventHandle {
+
+    TotemEventHandle() {
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+            if (entity instanceof ServerPlayer ServerPlayer) {
+                if(!TotemPlayerHandle.IsTotemDead(ServerPlayer)) {
+                    new TotemPlayerHandle(ServerPlayer);
+                }
+            }
+        });
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
+                if(playerHandleObject == null) {continue;}
+                    playerHandleObject.tick(server);
+            }
+        });
+
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
+                if(playerHandleObject == null) {continue;}
+                playerHandleObject.preparePlayer(newPlayer);
+            }
+        });
+
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(((serverPlayer, origin, destination) -> {
+            for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
+                if(playerHandleObject == null) {continue;}
+                if (playerHandleObject.Serverplayer == serverPlayer) {
+                    playerHandleObject.OnDimensionChange(destination);
+                }
+            }
+        }));
+    }
+}
