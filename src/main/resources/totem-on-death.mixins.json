@@ -3,7 +3,7 @@
 	"package": "ohne.name.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"PreventPickingUp"
 	],
 	"injectors": {
 		"defaultRequire": 1
