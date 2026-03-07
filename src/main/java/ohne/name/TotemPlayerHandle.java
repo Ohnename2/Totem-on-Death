@@ -16,12 +16,20 @@ import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.UUID;
 
 public class TotemPlayerHandle {
     static TotemPlayerHandle[] PlayerHandleObjects = new TotemPlayerHandle[1];
+
+    final int NeededTimeOnRespawner = 100;
+
+    final Long TimeToRespawn = 130L;
 
     UUID id;
     Player player;
@@ -32,6 +40,11 @@ public class TotemPlayerHandle {
     boolean playerIsRespawned = false;
     boolean isInVoid = false;
     TotemBossbar bossbar;
+    int TicksOnRespawner;
+    float RespawnPresentage;
+    Long RespawnTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + TimeToRespawn;
+    Long TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+    int TickCounter;
 
     public static void initialize() {}
 
@@ -49,18 +62,16 @@ public class TotemPlayerHandle {
         return false;
     }
 
-    public static boolean IsTotemDead(ServerPlayer player) {
+    public static boolean IsTotemDead(@NonNull ServerPlayer player) {
         UUID playeruuid = player.getUUID();
         for (TotemPlayerHandle PlayerHandleObject : PlayerHandleObjects) {
             if(PlayerHandleObject == null) {continue;}
             UUID currentObjectUuid = PlayerHandleObject.getUUID();
             if(currentObjectUuid == null) {continue;}
             if (currentObjectUuid.compareTo(playeruuid) == 0) {
-                System.out.println(1);
                 return true;
             }
         }
-        System.out.println(0);
         return false;
     }
 
@@ -77,10 +88,9 @@ public class TotemPlayerHandle {
 
     private static void removePlayerObject(TotemPlayerHandle PlayerObject) {
         for (int i = 0; i < PlayerHandleObjects.length; i++) {
-            if(PlayerHandleObjects[i] != null) {
-                if (PlayerHandleObjects[i] == PlayerObject) {
-                    PlayerHandleObjects[i] = null;
-                }
+            if(PlayerHandleObjects[i] == null) {continue;}
+            if (PlayerHandleObjects[i] == PlayerObject) {
+                PlayerHandleObjects[i] = null;
             }
         }
     }
@@ -149,17 +159,59 @@ public class TotemPlayerHandle {
     }
 
     private void CheckForRespawnConditions() {
+        CheckOnRespawner();
+        RespawnOnTime();
+    }
+
+    private void RespawnOnTime() {
+        TickCounter++;
+        if(TickCounter % 20 == 0) {
+            TimeNow++;
+            long RemainingTimeSecs = RespawnTime - TimeNow;
+            long RemainingTimeMins = RemainingTimeSecs / 60;
+            long RemainingTimeHours = RemainingTimeMins / 60;
+            long RemainingTimeDays = RemainingTimeHours / 24;
+            if(RemainingTimeDays > 1L) {
+                bossbar.setRemainingTime(RemainingTimeDays + " Tagen");
+            } else if(RemainingTimeHours > 1L) {
+                bossbar.setRemainingTime(RemainingTimeHours + " Stunden");
+            } else if(RemainingTimeMins > 1L) {
+                bossbar.setRemainingTime(RemainingTimeMins + " Minuten");
+            } else if(RemainingTimeSecs > 1L) {
+                bossbar.setRemainingTime(RemainingTimeSecs + " Sekunden");
+            }
+            if(RemainingTimeSecs <= 0L) {
+                Respawn();
+            }
+        }
+        if(TickCounter % 1200 == 0) {
+            TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        }
+    }
+
+    private void CheckOnRespawner() {
         BlockPos blockOn = Serverplayer.getBlockPosBelowThatAffectsMyMovement();
         Level level = Serverplayer.level();
         if(level.getBlockState(blockOn).getBlock().getDescriptionId().equals("block.totem-on-death.respawner")) {
-               bossbar.setProgress(1f);
-               bossbar.removeBossbar();
-               entity.setRemoved(Entity.RemovalReason.DISCARDED);
-               TotemPlayerHandle.removePlayerObject(this);
-               Serverplayer.setGameMode(GameType.DEFAULT_MODE);
-               Serverplayer.setInvulnerable(false);
-               Serverplayer.setInvisible(false);
+            TicksOnRespawner++;
+        } else {
+            if(TicksOnRespawner <= 0) {return;}
+            TicksOnRespawner--;
         }
+        RespawnPresentage = (float) TicksOnRespawner / NeededTimeOnRespawner;
+        bossbar.setProgress(RespawnPresentage);
+        if(TicksOnRespawner >= NeededTimeOnRespawner) {
+            Respawn();
+        }
+    }
+
+    public void Respawn() {
+        TotemPlayerHandle.removePlayerObject(this);
+        bossbar.removeBossbar();
+        entity.setRemoved(Entity.RemovalReason.DISCARDED);
+        Serverplayer.setGameMode(GameType.DEFAULT_MODE);
+        Serverplayer.setInvulnerable(false);
+        Serverplayer.setInvisible(false);
     }
 
     private void PreventPlayerFromFallingIntoTheVoid() {
