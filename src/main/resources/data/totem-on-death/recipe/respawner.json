@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#I#",
+    "###"
+  ],
+  "key": {
+    "#": "minecraft:crying_obsidian",
+    "I": "minecraft:diamond"
+  },
+  "result": {
+    "id": "totem-on-death:respawner",
+    "count": 1
+  }
+}
