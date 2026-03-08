@@ -1,14 +1,15 @@
 {
-	"required": true,
-	"package": "ohne.name.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"PreventPickingUp"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+  "required": true,
+  "package": "ohne.name.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ForceToRespawn",
+    "PreventPickingUp"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
 	}
 }
