@@ -32,7 +32,6 @@ public class TotemEventHandle {
         });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            System.out.println(Arrays.toString(TotemPlayerHandle.getPlayerHandleObjects()));
             for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
                 if(playerHandleObject == null) {continue;}
                 playerHandleObject.tick(server);
@@ -59,7 +58,6 @@ public class TotemEventHandle {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> FailInteractionWhenDead(player));
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> FailInteractionWhenDead(player));
         UseItemCallback.EVENT.register((player, world, hand) -> FailInteractionWhenDead(player));
-        ItemEvents.USE.register((level, player, interactionHand) -> FailInteractionWhenDead(player));
     }
 
     private InteractionResult FailInteractionWhenDead(Player player) {
