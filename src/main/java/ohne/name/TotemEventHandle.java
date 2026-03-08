@@ -5,19 +5,9 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.criterion.SpearMobsTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.ai.behavior.SpearRetreat;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.UseItemGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
-
-import java.awt.event.ItemEvent;
-import java.util.Arrays;
 
 
 public class TotemEventHandle {
