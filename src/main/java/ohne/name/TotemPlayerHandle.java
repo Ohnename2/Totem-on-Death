@@ -170,13 +170,13 @@ public class TotemPlayerHandle {
             long RemainingTimeHours = RemainingTimeMins / 60;
             long RemainingTimeDays = RemainingTimeHours / 24;
             if(RemainingTimeDays > 1L) {
-                bossbar.setRemainingTime(RemainingTimeDays + " Tagen");
+                bossbar.setRemainingTime(RemainingTimeDays + " Tagen.");
             } else if(RemainingTimeHours > 1L) {
-                bossbar.setRemainingTime(RemainingTimeHours + " Stunden");
+                bossbar.setRemainingTime(RemainingTimeHours + " Stunden.");
             } else if(RemainingTimeMins > 1L) {
-                bossbar.setRemainingTime(RemainingTimeMins + " Minuten");
+                bossbar.setRemainingTime(RemainingTimeMins + " Minuten.");
             } else if(RemainingTimeSecs > 1L) {
-                bossbar.setRemainingTime(RemainingTimeSecs + " Sekunden");
+                bossbar.setRemainingTime(RemainingTimeSecs + " Sekunden.");
             }
             if(RemainingTimeSecs <= 0L) {
                 Respawn();
