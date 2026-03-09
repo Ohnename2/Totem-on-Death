@@ -12,6 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.CopperChestBlock;
+import net.minecraft.world.level.block.WeatheringCopperBlocks;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -101,8 +103,17 @@ public class TotemPlayerHandle {
         if(player instanceof ServerPlayer i) {
             Serverplayer = i;
         }
-        Serverplayer.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(DeathLevel.dimension(), DeathPos),0,0),true),false);
+        calculateDeathToHinterVoidDeath();
         TotemPlayerHandle.addPlayerObject(this);
+
+    }
+
+    private void calculateDeathToHinterVoidDeath() {
+        if(DeathLevel.dimension().toString().equals(ServerLevel.END.toString()) && DeathPos.getY() <= 0) {
+            Serverplayer.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(DeathLevel.dimension(), DeathPos.atY(1)),0,0),true),false);
+            return;
+        }
+        Serverplayer.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(DeathLevel.dimension(), DeathPos),0,0),true),false);
     }
 
     private UUID getUUID() {
@@ -214,7 +225,7 @@ public class TotemPlayerHandle {
 
     private void PreventPlayerFromFallingIntoTheVoid() {
         if(Serverplayer.level().dimension().identifier().toString().equals("minecraft:the_end")) {
-            if(Serverplayer.getY() <= 10 && !isInVoid) {
+            if(Serverplayer.getY() <= 1 && !isInVoid) {
                 isInVoid = true;
                 if(Serverplayer.getDeltaMovement().y < 0) {
                     Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().multiply(1, -1.9, 1));
