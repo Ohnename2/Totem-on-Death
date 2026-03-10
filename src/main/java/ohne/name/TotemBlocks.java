@@ -19,12 +19,20 @@ public class TotemBlocks {
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register((itemGroup) -> {
             itemGroup.accept(TotemBlocks.RESPAWNER.asItem());
+            itemGroup.accept(TotemBlocks.CREATIVE_RESPAWNER.asItem());
         });
     }
-    
+
+    public static final Block CREATIVE_RESPAWNER = register(
+            "creative_respawner",
+            properties -> new TotemRespawner(properties, false),
+            BlockBehaviour.Properties.of().sound(SoundType.CREAKING_HEART).friction(0.999F).jumpFactor(0F).mapColor(MapColor.SNOW).strength(50f, 1200f),
+            true
+    );
+
     public static final Block RESPAWNER = register(
             "respawner",
-            TotemRespawner::new,
+            properties -> new TotemRespawner(properties, true),
             BlockBehaviour.Properties.of().sound(SoundType.CREAKING_HEART).friction(0.999F).jumpFactor(0F).mapColor(MapColor.SNOW).strength(50f, 1200f).randomTicks(),
             true
     );

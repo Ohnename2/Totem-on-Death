@@ -195,9 +195,9 @@ public class TotemPlayerHandle {
 
     private void CheckOnRespawner() {
         BlockPos blockOn = Serverplayer.getBlockPosBelowThatAffectsMyMovement();
-        Level level = Serverplayer.level();
+        ServerLevel level = Serverplayer.level();
         Block block = level.getBlockState(blockOn).getBlock();
-        if(block.getDescriptionId().equals("block.totem-on-death.respawner")) {
+        if(block instanceof TotemRespawner) {
             TicksOnRespawner++;
         } else {
             if(TicksOnRespawner <= 0) {return;}
@@ -206,8 +206,8 @@ public class TotemPlayerHandle {
         RespawnPresentage = (float) TicksOnRespawner / NeededTimeOnRespawner;
         bossbar.setProgress(RespawnPresentage);
         if(TicksOnRespawner >= NeededTimeOnRespawner) {
-            if(block instanceof TotemRespawner) {
-                level.destroyBlock(blockOn, true);
+            if(block instanceof TotemRespawner respawner) {
+                respawner.decay(level.getBlockState(blockOn), level, blockOn);
                 Respawn();
             }
         }
