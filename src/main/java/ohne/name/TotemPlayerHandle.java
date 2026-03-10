@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CopperChestBlock;
 import net.minecraft.world.level.block.WeatheringCopperBlocks;
 import net.minecraft.world.level.storage.LevelData;
@@ -197,7 +198,8 @@ public class TotemPlayerHandle {
     private void CheckOnRespawner() {
         BlockPos blockOn = Serverplayer.getBlockPosBelowThatAffectsMyMovement();
         Level level = Serverplayer.level();
-        if(level.getBlockState(blockOn).getBlock().getDescriptionId().equals("block.totem-on-death.respawner")) {
+        Block block = level.getBlockState(blockOn).getBlock();
+        if(block.getDescriptionId().equals("block.totem-on-death.respawner")) {
             TicksOnRespawner++;
         } else {
             if(TicksOnRespawner <= 0) {return;}
@@ -206,7 +208,10 @@ public class TotemPlayerHandle {
         RespawnPresentage = (float) TicksOnRespawner / NeededTimeOnRespawner;
         bossbar.setProgress(RespawnPresentage);
         if(TicksOnRespawner >= NeededTimeOnRespawner) {
-            Respawn();
+            if(block instanceof TotemRespawner) {
+                level.destroyBlock(blockOn, true);
+                Respawn();
+            }
         }
     }
 

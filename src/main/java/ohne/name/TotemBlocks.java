@@ -24,8 +24,8 @@ public class TotemBlocks {
     
     public static final Block RESPAWNER = register(
             "respawner",
-            Block::new,
-            BlockBehaviour.Properties.of().sound(SoundType.CREAKING_HEART).friction(1F).jumpFactor(0F).mapColor(MapColor.SNOW).strength(50f, 1200f),
+            TotemRespawner::new,
+            BlockBehaviour.Properties.of().sound(SoundType.CREAKING_HEART).friction(0.999F).jumpFactor(0F).mapColor(MapColor.SNOW).strength(50f, 1200f).randomTicks(),
             true
     );
 
