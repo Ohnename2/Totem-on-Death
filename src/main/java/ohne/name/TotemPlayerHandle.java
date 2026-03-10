@@ -133,10 +133,6 @@ public class TotemPlayerHandle {
         }
     }
 
-    private void setPlayer(ServerPlayer Player) {
-        Serverplayer = Player;
-    }
-
     private void createAndSpawnTotemEntity() {
         ItemStack stack = new ItemStack(Items.TOTEM_OF_UNDYING);
         entity = new TotemEntity(Serverplayer.level(), player.getX(), player.getY(), player.getZ(), stack);
