@@ -11,12 +11,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -24,26 +24,28 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 public class TotemPlayerHandle {
-    static TotemPlayerHandle[] PlayerHandleObjects = new TotemPlayerHandle[1];
+    static TotemPlayerHandle[] PlayerHandleObjects = new TotemPlayerHandle[0]; //Saved
 
     final int NeededTimeOnRespawner = 100;
 
     final Long TimeToRespawn = 130L;
 
     UUID id;
-    Player player;
     ServerPlayer Serverplayer;
     TotemEntity entity;
     BlockPos DeathPos;
     ServerLevel DeathLevel;
-    boolean playerIsRespawned = false;
+    boolean playerIsRespawned = false; // Saved
     boolean isInVoid = false;
     TotemBossbar bossbar;
     int TicksOnRespawner;
     float RespawnPresentage;
-    Long RespawnTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + TimeToRespawn;
+    Long RespawnTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + TimeToRespawn; // Saved
     Long TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     int TickCounter;
+    boolean removed = false;
+    boolean IsSaved = false;
+    boolean waitingForPrep = false;
 
     public static void initialize() {}
 
@@ -74,7 +76,20 @@ public class TotemPlayerHandle {
         return false;
     }
 
-    private static void addPlayerObject(TotemPlayerHandle playerObject) {
+    public static @Nullable TotemPlayerHandle getPlayerHandle(@NonNull ServerPlayer player) {
+        UUID playeruuid = player.getUUID();
+        for (TotemPlayerHandle PlayerHandleObject : PlayerHandleObjects) {
+            if (PlayerHandleObject == null) {continue;}
+            UUID currentObjectUuid = PlayerHandleObject.getUUID();
+            if (currentObjectUuid == null) {continue;}
+            if (currentObjectUuid.compareTo(playeruuid) == 0) {
+                return PlayerHandleObject;
+            }
+        }
+        return null;
+    }
+
+    public static void addPlayerObject(TotemPlayerHandle playerObject) {
         for (int i = 0; i < PlayerHandleObjects.length; i++) {
             if (PlayerHandleObjects[i] == null) {
                 PlayerHandleObjects[i] = playerObject;
@@ -85,7 +100,7 @@ public class TotemPlayerHandle {
         addPlayerObject(playerObject);
     }
 
-    private static void removePlayerObject(TotemPlayerHandle PlayerObject) {
+    public static void removePlayerObject(TotemPlayerHandle PlayerObject) {
         for (int i = 0; i < PlayerHandleObjects.length; i++) {
             if(PlayerHandleObjects[i] == null) {continue;}
             if (PlayerHandleObjects[i] == PlayerObject) {
@@ -94,17 +109,20 @@ public class TotemPlayerHandle {
         }
     }
 
-    TotemPlayerHandle(@NotNull Player playerentity) {
-        player = playerentity;
+    public TotemPlayerHandle(@NotNull ServerPlayer playerentity) {
+        Serverplayer = playerentity;
         id = playerentity.getUUID();
-        DeathPos = player.getLastDeathLocation().isPresent() ? player.getLastDeathLocation().get().pos(): BlockPos.ZERO;
-        DeathLevel = (ServerLevel) player.level();
-        if(player instanceof ServerPlayer i) {
-            Serverplayer = i;
-        }
+        DeathPos = Serverplayer.getLastDeathLocation().isPresent() ? Serverplayer.getLastDeathLocation().get().pos(): BlockPos.ZERO;
+        DeathLevel = Serverplayer.level();
         calculateDeathToHinterVoidDeath();
         TotemPlayerHandle.addPlayerObject(this);
+    }
 
+    public TotemPlayerHandle(@NotNull ServerPlayer playerentity, Long respawnTime) {
+        if(respawnTime != -1) {this.RespawnTime = respawnTime;}
+        Serverplayer = playerentity;
+        id = playerentity.getUUID();
+        TotemPlayerHandle.addPlayerObject(this);
     }
 
     private void calculateDeathToHinterVoidDeath() {
@@ -121,7 +139,8 @@ public class TotemPlayerHandle {
 
     public void preparePlayer(ServerPlayer newPlayer) {
         if(playerIsRespawned) {return;}
-        if(newPlayer.getUUID() == id) {
+        if(newPlayer.getUUID().compareTo(id) == 0) {
+            waitingForPrep = false;
             playerIsRespawned = true;
             Serverplayer = newPlayer;
             bossbar = new TotemBossbar(Serverplayer);
@@ -134,7 +153,7 @@ public class TotemPlayerHandle {
 
     private void createAndSpawnTotemEntity() {
         ItemStack stack = new ItemStack(Items.TOTEM_OF_UNDYING);
-        entity = new TotemEntity(Serverplayer.level(), player.getX(), player.getY(), player.getZ(), stack);
+        entity = new TotemEntity(Serverplayer.level(), Serverplayer.getX(), Serverplayer.getY(), Serverplayer.getZ(), stack);
         entity.setNeverPickUp();
         entity.setNoGravity(true);
         entity.setUnlimitedLifetime();
@@ -145,7 +164,19 @@ public class TotemPlayerHandle {
     }
 
     public void tick(MinecraftServer server) {
-        if (Serverplayer == null || entity == null) {return;}
+        if(IsRemoved()) {
+            if(IsSaved) {
+                entity.setRemoved(Entity.RemovalReason.DISCARDED);
+                removePlayerObject(this);
+            }
+            return;
+        }
+        if (Serverplayer == null) {return;}
+        if(this.waitingForPrep) {
+            preparePlayer(this.Serverplayer);
+            return;
+        }
+        if(entity == null) {return;}
         if(!playerIsRespawned) {return;}
         Serverplayer.setInvisible(true);
         entity.setPortalCooldown(20000);
@@ -236,6 +267,26 @@ public class TotemPlayerHandle {
             } else {
                 isInVoid = false;
             }
+        }
+    }
+    public void OnJoin() {
+        this.waitingForPrep = true;
+    }
+
+    public Long getRespawnTime() {
+        return this.RespawnTime;
+    }
+
+    public boolean IsRemoved() {
+        return this.removed;
+    }
+
+    public void setRemoved() {
+        this.removed = true;
+    }
+    public void setSaved() {
+        if(IsRemoved()) {
+            this.IsSaved = true;
         }
     }
 }

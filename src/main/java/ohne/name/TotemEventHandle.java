@@ -21,6 +21,7 @@ public class TotemEventHandle {
             }
         });
 
+
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
                 if(playerHandleObject == null) {continue;}
@@ -43,6 +44,18 @@ public class TotemEventHandle {
                 }
             }
         }));
+
+        ServerPlayerEvents.JOIN.register(serverPlayer -> {
+            TotemPlayerHandle obj =  TotemPlayerHandle.getPlayerHandle(serverPlayer);
+            if(obj == null) {return;}
+            obj.OnJoin();
+        });
+
+        ServerPlayerEvents.LEAVE.register(serverPlayer -> {
+            TotemPlayerHandle obj =  TotemPlayerHandle.getPlayerHandle(serverPlayer);
+            if(obj == null) {return;}
+            obj.setRemoved();
+        });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> FailInteractionWhenDead(player));
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> FailInteractionWhenDead(player));
