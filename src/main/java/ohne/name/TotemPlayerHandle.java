@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Relative;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -33,8 +32,6 @@ public class TotemPlayerHandle {
     UUID id;
     ServerPlayer Serverplayer;
     TotemEntity entity;
-    BlockPos DeathPos;
-    ServerLevel DeathLevel;
     boolean playerIsRespawned = false; // Saved
     boolean isInVoid = false;
     TotemBossbar bossbar;
@@ -112,33 +109,34 @@ public class TotemPlayerHandle {
     public TotemPlayerHandle(@NotNull ServerPlayer playerentity) {
         Serverplayer = playerentity;
         id = playerentity.getUUID();
-        DeathPos = Serverplayer.getLastDeathLocation().isPresent() ? Serverplayer.getLastDeathLocation().get().pos(): BlockPos.ZERO;
-        DeathLevel = Serverplayer.level();
-        calculateDeathToHinterVoidDeath();
+        BlockPos deathPos = Serverplayer.getLastDeathLocation().isPresent() ? Serverplayer.getLastDeathLocation().get().pos(): BlockPos.ZERO;
+        ServerLevel deathLevel = Serverplayer.level();
+        SetRespawnPos(deathPos, deathLevel);
         TotemPlayerHandle.addPlayerObject(this);
     }
 
-    public TotemPlayerHandle(@NotNull ServerPlayer playerentity, Long respawnTime) {
+    public TotemPlayerHandle(@NotNull ServerPlayer playerentity, Long respawnTime, boolean IsInDeathScreen) {
         if(respawnTime != -1) {this.RespawnTime = respawnTime;}
         Serverplayer = playerentity;
         id = playerentity.getUUID();
+        this.playerIsRespawned = !IsInDeathScreen;
         TotemPlayerHandle.addPlayerObject(this);
     }
 
-    private void calculateDeathToHinterVoidDeath() {
-        if(DeathLevel.dimension().toString().equals(ServerLevel.END.toString()) && DeathPos.getY() <= 0) {
-            Serverplayer.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(DeathLevel.dimension(), DeathPos.atY(1)),0,0),true),false);
+    private void SetRespawnPos(BlockPos deathPos, ServerLevel deathlevel) {
+        if(deathlevel.dimension().toString().equals(ServerLevel.END.toString()) && deathPos.getY() <= 0) {
+            Serverplayer.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(deathlevel.dimension(), deathPos.atY(1)),0,0),true),false);
             return;
         }
-        Serverplayer.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(DeathLevel.dimension(), DeathPos),0,0),true),false);
+        Serverplayer.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(deathlevel.dimension(), deathPos),0,0),true),false);
     }
 
     private UUID getUUID() {
         return this.id;
     }
 
-    public void preparePlayer(ServerPlayer newPlayer) {
-        if(playerIsRespawned) {return;}
+    public void preparePlayer(ServerPlayer newPlayer, boolean force) {
+        if(playerIsRespawned && !force) {return;}
         if(newPlayer.getUUID().compareTo(id) == 0) {
             waitingForPrep = false;
             playerIsRespawned = true;
@@ -149,6 +147,10 @@ public class TotemPlayerHandle {
             Serverplayer.setInvulnerable(true);
             Serverplayer.setInvisible(true);
         }
+    }
+
+    public void preparePlayer(ServerPlayer newPlayer) {
+            this.preparePlayer(newPlayer, false);
     }
 
     private void createAndSpawnTotemEntity() {
@@ -164,20 +166,10 @@ public class TotemPlayerHandle {
     }
 
     public void tick(MinecraftServer server) {
-        if(IsRemoved()) {
-            if(IsSaved) {
-                entity.setRemoved(Entity.RemovalReason.DISCARDED);
-                removePlayerObject(this);
-            }
-            return;
-        }
+        if(this.CheckForRemoval()) {return;}
         if (Serverplayer == null) {return;}
-        if(this.waitingForPrep) {
-            preparePlayer(this.Serverplayer);
-            return;
-        }
-        if(entity == null) {return;}
-        if(!playerIsRespawned) {return;}
+        if(this.CheckPrepared()) {return;}
+        if(entity == null || !playerIsRespawned) {return;}
         Serverplayer.setInvisible(true);
         entity.setPortalCooldown(20000);
         Vec3 targetPos = Serverplayer.position();
@@ -194,8 +186,8 @@ public class TotemPlayerHandle {
     }
 
     private void CheckForRespawnConditions() {
-        CheckOnRespawner();
-        RespawnOnTime();
+        this.CheckOnRespawner();
+        this.RespawnOnTime();
     }
 
     private void RespawnOnTime() {
@@ -245,12 +237,27 @@ public class TotemPlayerHandle {
     }
 
     public void Respawn() {
-        TotemPlayerHandle.removePlayerObject(this);
+        this.RemoveObjects();
         bossbar.removeBossbar();
         entity.setRemoved(Entity.RemovalReason.DISCARDED);
         Serverplayer.setGameMode(GameType.DEFAULT_MODE);
         Serverplayer.setInvulnerable(false);
         Serverplayer.setInvisible(false);
+    }
+
+    public void RemoveObjects() {
+        TotemPlayerHandle.removePlayerObject(this);
+        entity.setRemoved(Entity.RemovalReason.DISCARDED);
+    }
+
+    public boolean CheckForRemoval() {
+        if(IsRemoved()) {
+            if(IsSaved) {
+                RemoveObjects();
+            }
+            return true;
+        }
+        return false;
     }
 
     private void PreventPlayerFromFallingIntoTheVoid() {
@@ -273,6 +280,18 @@ public class TotemPlayerHandle {
         this.waitingForPrep = true;
     }
 
+    public boolean CheckPrepared() {
+        if(this.waitingForPrep) {
+            if(this.IsInDeathScreen()) {
+                waitingForPrep = false;
+                return true;
+            }
+            this.preparePlayer(this.Serverplayer, true);
+            return true;
+        }
+        return false;
+    }
+
     public Long getRespawnTime() {
         return this.RespawnTime;
     }
@@ -285,8 +304,11 @@ public class TotemPlayerHandle {
         this.removed = true;
     }
     public void setSaved() {
-        if(IsRemoved()) {
+        if(this.IsRemoved()) {
             this.IsSaved = true;
         }
+    }
+    public boolean IsInDeathScreen() {
+        return !this.playerIsRespawned;
     }
 }
