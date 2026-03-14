@@ -162,6 +162,8 @@ public class TotemPlayerHandle {
         entity.setGlowingTag(true);
         entity.setInvulnerable(true);
         entity.canUsePortal(false);
+        entity.setCustomNameVisible(true);
+        entity.setCustomName(Serverplayer.getName());
         Serverplayer.level().addFreshEntity(entity);
     }
 
