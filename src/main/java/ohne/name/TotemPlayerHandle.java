@@ -247,7 +247,7 @@ public class TotemPlayerHandle {
 
     public void RemoveObjects() {
         TotemPlayerHandle.removePlayerObject(this);
-        entity.setRemoved(Entity.RemovalReason.DISCARDED);
+        if(entity != null) {entity.setRemoved(Entity.RemovalReason.DISCARDED);}
     }
 
     public boolean CheckForRemoval() {
