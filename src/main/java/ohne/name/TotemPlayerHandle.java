@@ -2,6 +2,8 @@ package ohne.name;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -201,13 +203,13 @@ public class TotemPlayerHandle {
             long RemainingTimeHours = RemainingTimeMins / 60;
             long RemainingTimeDays = RemainingTimeHours / 24;
             if(RemainingTimeDays > 1L) {
-                bossbar.setRemainingTime(RemainingTimeDays + " Tagen.");
+                bossbar.setRemainingTime(RemainingTimeDays, 3);
             } else if(RemainingTimeHours > 1L) {
-                bossbar.setRemainingTime(RemainingTimeHours + " Stunden.");
+                bossbar.setRemainingTime(RemainingTimeHours, 2);
             } else if(RemainingTimeMins > 1L) {
-                bossbar.setRemainingTime(RemainingTimeMins + " Minuten.");
+                bossbar.setRemainingTime(RemainingTimeMins, 1);
             } else if(RemainingTimeSecs > 1L) {
-                bossbar.setRemainingTime(RemainingTimeSecs + " Sekunden.");
+                bossbar.setRemainingTime(RemainingTimeSecs, 0);
             }
             if(RemainingTimeSecs <= 0L) {
                 Respawn();

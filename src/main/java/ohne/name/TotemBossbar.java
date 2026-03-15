@@ -6,13 +6,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 
 public class TotemBossbar {
-    final String BaseText = "Du bist Tot! Respawn in";
     ServerPlayer target;
     ServerBossEvent bossbar;
 
     TotemBossbar(ServerPlayer entity) {
         target = entity;
-        bossbar = new ServerBossEvent(Component.literal(BaseText),BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+        bossbar = new ServerBossEvent(Component.literal(" "),BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
         bossbar.addPlayer(target);
         bossbar.setProgress(0);
     }
@@ -28,7 +27,21 @@ public class TotemBossbar {
         bossbar.setVisible(false);
     }
 
-    public void setRemainingTime(String text) {
-        bossbar.setName(Component.literal(BaseText + " " + text));
+    public void setRemainingTime(Long time, int Unit) {
+        switch (Unit) {
+            case 0:
+                bossbar.setName(Component.translatable("text.totem-on-death.bossbar.seconds", time ));
+                break;
+            case 1:
+                bossbar.setName(Component.translatable("text.totem-on-death.bossbar.minutes", time ));
+                break;
+            case 2:
+                bossbar.setName(Component.translatable("text.totem-on-death.bossbar.hours", time ));
+                break;
+            case 3:
+                bossbar.setName(Component.translatable("text.totem-on-death.bossbar.days", time ));
+            default:
+                bossbar.setName(Component.translatable("text.totem-on-death.bossbar.seconds", time ));
+        }
     }
 }

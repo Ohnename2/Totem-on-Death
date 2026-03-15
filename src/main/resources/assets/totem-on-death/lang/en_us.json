@@ -1,4 +1,8 @@
 {
   "block.totem-on-death.respawner": "Respawner",
-  "block.totem-on-death.creative_respawner": "Creative Respawner"
+  "block.totem-on-death.creative_respawner": "Creative Respawner",
+  "text.totem-on-death.bossbar.seconds": "You are dead! Respawn in %d seconds.",
+  "text.totem-on-death.bossbar.minutes": "You are dead! Respawn in %d minutes.",
+  "text.totem-on-death.bossbar.hours": "You are dead! Respawn in %d hours.",
+  "text.totem-on-death.bossbar.days": "You are dead! Respawn in %d days."
 }
