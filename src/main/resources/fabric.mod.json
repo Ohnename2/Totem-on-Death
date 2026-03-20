@@ -3,7 +3,7 @@
 	"id": "totem-on-death",
 	"version": "${version}",
 	"name": "Totem on death",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Changes the death mechanic to force players to play together.",
 	"authors": [
 		"Ohne name"
 	],
