@@ -12,7 +12,7 @@
 		"sources": "https://github.com/Ohnename2/Totem-on-Death"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/totem-on-death/icon.png",
+	"icon": "assets/totem-on-death/textures/block/respawner.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
