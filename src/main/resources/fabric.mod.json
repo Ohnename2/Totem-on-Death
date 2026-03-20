@@ -8,8 +8,8 @@
 		"Ohne name"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "",
+		"sources": "https://github.com/Ohnename2/Totem-on-Death"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/totem-on-death/icon.png",
