@@ -11,7 +11,7 @@
 		"homepage": "",
 		"sources": "https://github.com/Ohnename2/Totem-on-Death"
 	},
-	"license": "",
+	"license": "MIT",
 	"icon": "assets/totem-on-death/textures/block/respawner.png",
 	"environment": "*",
 	"entrypoints": {
