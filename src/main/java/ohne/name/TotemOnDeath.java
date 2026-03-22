@@ -18,6 +18,7 @@ public class TotemOnDeath implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		TotemConfigHandle.loadConfig();
 		TotemBlocks.initialize();
 		TotemPlayerHandle.initialize();
 		new TotemEventHandle();

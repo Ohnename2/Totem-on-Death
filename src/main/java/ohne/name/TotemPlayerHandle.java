@@ -2,8 +2,6 @@ package ohne.name;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,7 +27,7 @@ public class TotemPlayerHandle {
 
     final int NeededTimeOnRespawner = 100;
 
-    final Long TimeToRespawn = 130L;
+    final Long TimeToRespawn = TotemConfigHandle.CONFIG.TimeToRespawnInSeconds;
 
     UUID id;
     ServerPlayer Serverplayer;
