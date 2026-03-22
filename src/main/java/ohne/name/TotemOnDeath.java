@@ -22,6 +22,6 @@ public class TotemOnDeath implements ModInitializer {
 		TotemBlocks.initialize();
 		TotemPlayerHandle.initialize();
 		new TotemEventHandle();
-		LOGGER.info("Totem has been initialized");
+		LOGGER.info("Totem-on-Death has been initialized");
 	}
 }
