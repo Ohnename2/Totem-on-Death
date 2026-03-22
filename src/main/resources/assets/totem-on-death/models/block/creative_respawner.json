@@ -1,6 +1,6 @@
 {   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "minecraft:block/obsidian",
+    "particle": "minecraft:block/ancient_debris_side",
     "top": "totem-on-death:block/creative_respawner",
     "side": "minecraft:block/ancient_debris_side",
     "bottom": "minecraft:block/ancient_debris_top"
