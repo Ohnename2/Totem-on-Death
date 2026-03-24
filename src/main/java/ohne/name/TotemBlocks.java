@@ -1,6 +1,6 @@
 package ohne.name;
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class TotemBlocks {
     public static void initialize() {
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register((itemGroup) -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register((itemGroup) -> {
             itemGroup.accept(TotemBlocks.RESPAWNER.asItem());
             itemGroup.accept(TotemBlocks.CREATIVE_RESPAWNER.asItem());
         });
