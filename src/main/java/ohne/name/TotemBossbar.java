@@ -11,7 +11,7 @@ public class TotemBossbar {
 
     TotemBossbar(ServerPlayer entity) {
         target = entity;
-        bossbar = new ServerBossEvent(Component.literal(" "),BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+        bossbar = new ServerBossEvent(entity.getUUID() ,Component.literal(" "),BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
         bossbar.addPlayer(target);
         bossbar.setProgress(0);
     }
