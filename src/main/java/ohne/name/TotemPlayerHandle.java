@@ -146,6 +146,7 @@ public class TotemPlayerHandle {
             Serverplayer.setGameMode(GameType.ADVENTURE);
             Serverplayer.setInvulnerable(true);
             Serverplayer.setInvisible(true);
+            Serverplayer.setRespawnPosition(null,false);
         }
     }
 
