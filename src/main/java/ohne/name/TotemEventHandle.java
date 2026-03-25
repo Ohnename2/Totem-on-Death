@@ -29,28 +29,6 @@ public class TotemEventHandle {
             }
         });
 
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
-                if(playerHandleObject == null) {continue;}
-                playerHandleObject.preparePlayer(newPlayer);
-            }
-        });
-
-        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register(((serverPlayer, origin, destination) -> {
-            for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
-                if(playerHandleObject == null) {continue;}
-                if (playerHandleObject.Serverplayer == serverPlayer) {
-                    playerHandleObject.OnDimensionChange(destination);
-                }
-            }
-        }));
-
-        ServerPlayerEvents.JOIN.register(serverPlayer -> {
-            TotemPlayerHandle obj =  TotemPlayerHandle.getPlayerHandle(serverPlayer);
-            if(obj == null) {return;}
-            obj.OnJoin();
-        });
-
         ServerPlayerEvents.LEAVE.register(serverPlayer -> {
             TotemPlayerHandle obj =  TotemPlayerHandle.getPlayerHandle(serverPlayer);
             if(obj == null) {return;}
