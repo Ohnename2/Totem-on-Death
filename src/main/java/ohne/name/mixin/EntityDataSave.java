@@ -18,7 +18,7 @@ public class EntityDataSave {
         ServerPlayer serverPlayer = (ServerPlayer) (Object) this;
         boolean IsDead = valueInput.getBooleanOr(TotemOnDeath.MOD_ID + ":IsDead", false);
         if(IsDead) {
-            new TotemPlayerHandle(serverPlayer, valueInput.getLongOr(TotemOnDeath.MOD_ID + ":RespawnTime", -1L), valueInput.getBooleanOr(TotemOnDeath.MOD_ID + ":IsInDeathScreen", false));
+            new TotemPlayerHandle(serverPlayer, valueInput.getLongOr(TotemOnDeath.MOD_ID + ":RespawnTime", -1L));
         }
     }
 
@@ -28,13 +28,10 @@ public class EntityDataSave {
         TotemPlayerHandle playerHandleObject = TotemPlayerHandle.getPlayerHandle(serverPlayer);
         if(playerHandleObject == null) {
             valueOutput.putBoolean(TotemOnDeath.MOD_ID + ":IsDead", false);
-            valueOutput.putBoolean(TotemOnDeath.MOD_ID + ":IsInDeathScreen", false);
             valueOutput.putLong(TotemOnDeath.MOD_ID + ":RespawnTime", 0L);
             return;
         }
         valueOutput.putBoolean(TotemOnDeath.MOD_ID + ":IsDead", true);
-        valueOutput.putBoolean(TotemOnDeath.MOD_ID + ":IsInDeathScreen", playerHandleObject.IsInDeathScreen());
-        assert playerHandleObject != null;
         valueOutput.putLong(TotemOnDeath.MOD_ID + ":RespawnTime", playerHandleObject.getRespawnTime());
         playerHandleObject.setSaved();
     }

@@ -1,6 +1,5 @@
 package ohne.name;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -27,28 +26,6 @@ public class TotemEventHandle {
                 if(playerHandleObject == null) {continue;}
                 playerHandleObject.tick(server);
             }
-        });
-
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
-                if(playerHandleObject == null) {continue;}
-                playerHandleObject.preparePlayer(newPlayer);
-            }
-        });
-
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(((serverPlayer, origin, destination) -> {
-            for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
-                if(playerHandleObject == null) {continue;}
-                if (playerHandleObject.Serverplayer == serverPlayer) {
-                    playerHandleObject.OnDimensionChange(destination);
-                }
-            }
-        }));
-
-        ServerPlayerEvents.JOIN.register(serverPlayer -> {
-            TotemPlayerHandle obj =  TotemPlayerHandle.getPlayerHandle(serverPlayer);
-            if(obj == null) {return;}
-            obj.OnJoin();
         });
 
         ServerPlayerEvents.LEAVE.register(serverPlayer -> {
