@@ -1,5 +1,6 @@
 package ohne.name;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
+import ohne.name.networking.Status;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -179,6 +181,7 @@ public class TotemPlayerHandle {
             entity.totemTick(Serverplayer.level(), Serverplayer.position(), Serverplayer.getYRot(), Serverplayer.getXRot());
             PreventPlayerFromFallingIntoTheVoid();
             CheckForRespawnConditions();
+            bossbar.tick();
         }
     }
 
@@ -207,6 +210,7 @@ public class TotemPlayerHandle {
             if(RemainingTimeSecs <= 0L) {
                 Respawn();
             }
+            bossbar.setProgressTime((float) (TimeToRespawn - RemainingTimeSecs) / (float) TimeToRespawn);
         }
         if(TickCounter % 1200 == 0) {
             TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
@@ -217,14 +221,16 @@ public class TotemPlayerHandle {
         BlockPos blockOn = Serverplayer.getBlockPosBelowThatAffectsMyMovement();
         ServerLevel level = Serverplayer.level();
         Block block = level.getBlockState(blockOn).getBlock();
+        bossbar.showOnRespawner(TicksOnRespawner != 0);
         if(block instanceof TotemRespawner) {
             TicksOnRespawner++;
         } else {
             if(TicksOnRespawner <= 0) {return;}
             TicksOnRespawner--;
         }
+        bossbar.setProgressRespawner((float) TicksOnRespawner / NeededTimeOnRespawner);
         RespawnPresentage = (float) TicksOnRespawner / NeededTimeOnRespawner;
-        bossbar.setProgress(RespawnPresentage);
+        bossbar.setProgressRespawner(RespawnPresentage);
         if(TicksOnRespawner >= NeededTimeOnRespawner) {
             if(block instanceof TotemRespawner respawner) {
                 respawner.decay(level.getBlockState(blockOn), level, blockOn);
@@ -288,5 +294,10 @@ public class TotemPlayerHandle {
         if(this.IsRemoved()) {
             this.IsSaved = true;
         }
+    }
+
+    public void SendStatusUpdate(boolean status) {
+        Status payload = new Status(status);
+        ServerPlayNetworking.send(this.Serverplayer, payload);
     }
 }
