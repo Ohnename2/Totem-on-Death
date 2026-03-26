@@ -138,6 +138,7 @@ public class TotemPlayerHandle {
                 Serverplayer.setGameMode(GameType.ADVENTURE);
                 Serverplayer.setInvulnerable(true);
                 Serverplayer.setInvisible(true);
+                SendStatusUpdate(true);
                 break;
             }
         }
@@ -245,6 +246,7 @@ public class TotemPlayerHandle {
         Serverplayer.setGameMode(GameType.DEFAULT_MODE);
         Serverplayer.setInvulnerable(false);
         Serverplayer.setInvisible(false);
+        SendStatusUpdate(false);
     }
 
     public void RemoveObjects() {
