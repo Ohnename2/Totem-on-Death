@@ -230,8 +230,6 @@ public class TotemPlayerHandle {
             TicksOnRespawner--;
         }
         bossbar.setProgressRespawner((float) TicksOnRespawner / NeededTimeOnRespawner);
-        RespawnPresentage = (float) TicksOnRespawner / NeededTimeOnRespawner;
-        bossbar.setProgressRespawner(RespawnPresentage);
         if(TicksOnRespawner >= NeededTimeOnRespawner) {
             if(block instanceof TotemRespawner respawner) {
                 respawner.decay(level.getBlockState(blockOn), level, blockOn);
