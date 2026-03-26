@@ -20,7 +20,6 @@ public class TotemEventHandle {
             }
         });
 
-
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
                 if(playerHandleObject == null) {continue;}
