@@ -23,7 +23,11 @@
 		]
 	},
 	"mixins": [
-		"totem-on-death.mixins.json"
+		"totem-on-death.mixins.json",
+		{
+			"config": "totem-on-death.mixins.client.json",
+			"environment": "client"
+		}
 	],
 	"depends": {
 		"fabricloader": ">=0.18.4",
