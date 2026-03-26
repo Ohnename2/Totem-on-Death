@@ -2,12 +2,7 @@ package ohne.name;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import ohne.name.networking.InitializePackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +16,7 @@ public class TotemOnDeath implements ModInitializer {
 		TotemConfigHandle.loadConfig();
 		TotemBlocks.initialize();
 		TotemPlayerHandle.initialize();
+		new InitializePackets();
 		new TotemEventHandle();
 		LOGGER.info("Totem-on-Death has been initialized");
 	}
