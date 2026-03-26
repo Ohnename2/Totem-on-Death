@@ -3,11 +3,7 @@
   "package": "ohne.name.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "EntityDataSave",
-    "ForceToRespawn",
-    "PreventHopperSuck",
-    "PreventPickingUp",
-    "PreventSpearAttack"
+    "HideLowerGui"
   ],
   "injectors": {
     "defaultRequire": 1
