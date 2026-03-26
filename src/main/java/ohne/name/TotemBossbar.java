@@ -8,6 +8,9 @@ import net.minecraft.world.BossEvent;
 public class TotemBossbar {
     ServerPlayer target;
     ServerBossEvent bossbar;
+    boolean RespawnerShown = false;
+    float ProgressRespawner;
+    float ProgressTime;
 
     TotemBossbar(ServerPlayer entity) {
         target = entity;
@@ -16,11 +19,31 @@ public class TotemBossbar {
         bossbar.setProgress(0);
     }
 
-    public void setProgress(float Progress) {
-        bossbar.setProgress(Progress);
+    public void showOnRespawner(boolean show) {
+        RespawnerShown = show;
+        if (show) {
+            bossbar.setColor(BossEvent.BossBarColor.GREEN);
+        } else {
+            bossbar.setColor(BossEvent.BossBarColor.RED);
+        }
+        this.tick();
     }
 
-    public float getProgress() {return bossbar.getProgress();}
+    public void tick() {
+        if(RespawnerShown) {
+            bossbar.setProgress(ProgressRespawner);
+        } else  {
+            bossbar.setProgress(ProgressTime);
+        }
+    }
+
+    public void setProgressRespawner(float Progress) {
+        ProgressRespawner = Progress;
+    }
+
+    public void setProgressTime(float Progress) {
+        ProgressTime = Progress;
+    }
 
     public void removeBossbar() {
         bossbar.removePlayer(target);
