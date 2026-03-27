@@ -33,9 +33,7 @@ public class TotemEventHandle {
             }
         });
 
-        ServerPlayerEvents.JOIN.register(serverPlayer -> {
-
-        });
+        ServerPlayerEvents.JOIN.register(TotemPlayerHandle::SendPlayerUpdate);
 
         ServerPlayerEvents.LEAVE.register(serverPlayer -> {
             TotemPlayerHandle obj =  TotemPlayerHandle.getPlayerHandle(serverPlayer);

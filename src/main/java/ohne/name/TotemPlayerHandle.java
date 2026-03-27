@@ -89,7 +89,7 @@ public class TotemPlayerHandle {
         for (int i = 0; i < PlayerHandleObjects.length; i++) {
             if (PlayerHandleObjects[i] == null) {
                 PlayerHandleObjects[i] = playerObject;
-                TotemPlayerHandle.SendPlayerUpdate(SERVER);
+                TotemPlayerHandle.SendPlayerUpdateToAll(SERVER);
                 return;
             }
         }
@@ -102,7 +102,7 @@ public class TotemPlayerHandle {
             if(PlayerHandleObjects[i] == null) {continue;}
             if (PlayerHandleObjects[i] == PlayerObject) {
                 PlayerHandleObjects[i] = null;
-                TotemPlayerHandle.SendPlayerUpdate(SERVER);
+                TotemPlayerHandle.SendPlayerUpdateToAll(SERVER);
             }
         }
     }
@@ -119,12 +119,18 @@ public class TotemPlayerHandle {
         return returnArray;
     }
 
-    public static void SendPlayerUpdate(MinecraftServer server) {
+    public static void SendPlayerUpdateToAll(MinecraftServer server) {
         if(server == null) {return;}
         Status payload = new Status(Arrays.asList(getArrayOfDeadPlayers()));
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             ServerPlayNetworking.send(player, payload);
         }
+    }
+
+    public static void SendPlayerUpdate(ServerPlayer player) {
+        if(player == null) {return;}
+        Status payload = new Status(Arrays.asList(getArrayOfDeadPlayers()));
+        ServerPlayNetworking.send(player, payload);
     }
 
     public TotemPlayerHandle(@NotNull ServerPlayer playerentity) {
