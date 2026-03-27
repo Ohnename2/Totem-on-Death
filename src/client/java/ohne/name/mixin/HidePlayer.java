@@ -22,9 +22,13 @@ public class HidePlayer<AvatarlikeEntity extends Avatar & ClientAvatarEntity> {
             if(TotemOnDeathClient.IsDead) {
                 ci.cancel();
             }
-        } else if (entity instanceof RemotePlayer remotePlayer) {
+        } else if (entity instanceof RemotePlayer) {
+            if(TotemOnDeathClient.DeadPlayers == null) {
+                return;
+            }
             UUID entityUUID = entity.getUUID();
             for (UUID uuid : TotemOnDeathClient.DeadPlayers) {
+                if(uuid == null || (uuid.equals(new UUID(0L, 0L)))) {return;}
                 if (uuid.equals(entityUUID)) {
                     ci.cancel();
                     return;

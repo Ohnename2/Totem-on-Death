@@ -20,6 +20,7 @@ public class TotemOnDeathClient implements ClientModInitializer {
 		});
 		ClientPlayConnectionEvents.DISCONNECT.register((client, server) -> {
 			DeadPlayers = null;
+			LocalPlayerUuid = null;
 			setIsDead();
 		});
 		ClientPlayNetworking.registerGlobalReceiver(Status.ID, (payload, context) -> {
@@ -28,6 +29,10 @@ public class TotemOnDeathClient implements ClientModInitializer {
 		});
 	}
 	public static void setIsDead() {
+		if(LocalPlayerUuid == null)	{
+			IsDead = false;
+			return;
+		}
 		for(UUID uuid : DeadPlayers) {
 			if(uuid.equals(LocalPlayerUuid)) {
 				IsDead = true;
