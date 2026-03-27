@@ -1,8 +1,6 @@
 package ohne.name;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.menu.Networking;
-import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
