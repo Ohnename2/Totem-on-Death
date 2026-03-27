@@ -37,7 +37,6 @@ public class TotemPlayerHandle {
     boolean isInVoid = false;
     TotemBossbar bossbar;
     int TicksOnRespawner;
-    float RespawnPresentage;
     Long RespawnTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + TimeToRespawn; // Saved
     Long TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     int TickCounter;
