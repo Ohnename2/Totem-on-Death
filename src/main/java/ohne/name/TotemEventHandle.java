@@ -2,16 +2,22 @@ package ohne.name;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 
 
 public class TotemEventHandle {
+    public static MinecraftServer SERVER;
 
     TotemEventHandle() {
+        ServerLifecycleEvents.SERVER_STARTED.register((server) -> {SERVER = server;});
+        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {SERVER = null;});
+
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (entity instanceof ServerPlayer ServerPlayer) {
                 if(!TotemPlayerHandle.IsTotemDead(ServerPlayer)) {
@@ -25,6 +31,10 @@ public class TotemEventHandle {
                 if(playerHandleObject == null) {continue;}
                 playerHandleObject.tick(server);
             }
+        });
+
+        ServerPlayerEvents.JOIN.register(serverPlayer -> {
+
         });
 
         ServerPlayerEvents.LEAVE.register(serverPlayer -> {

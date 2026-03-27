@@ -1,6 +1,8 @@
 package ohne.name;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.menu.Networking;
+import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
@@ -21,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.UUID;
+
+import static ohne.name.TotemEventHandle.SERVER;
 
 public class TotemPlayerHandle {
     static TotemPlayerHandle[] PlayerHandleObjects = new TotemPlayerHandle[0]; //Saved
@@ -88,6 +92,7 @@ public class TotemPlayerHandle {
         for (int i = 0; i < PlayerHandleObjects.length; i++) {
             if (PlayerHandleObjects[i] == null) {
                 PlayerHandleObjects[i] = playerObject;
+                TotemPlayerHandle.SendPlayerUpdate(SERVER);
                 return;
             }
         }
@@ -100,7 +105,28 @@ public class TotemPlayerHandle {
             if(PlayerHandleObjects[i] == null) {continue;}
             if (PlayerHandleObjects[i] == PlayerObject) {
                 PlayerHandleObjects[i] = null;
+                TotemPlayerHandle.SendPlayerUpdate(SERVER);
             }
+        }
+    }
+
+    public static UUID[] getArrayOfDeadPlayers() {
+        UUID[] returnArray = new UUID[PlayerHandleObjects.length];
+        for (int i = 0; i < PlayerHandleObjects.length; i++) {
+            if(PlayerHandleObjects[i] == null) {
+                returnArray[i] = new UUID(0L, 0L);
+                continue;
+            }
+            returnArray[i] = PlayerHandleObjects[i].getUUID();
+        }
+        return returnArray;
+    }
+
+    public static void SendPlayerUpdate(MinecraftServer server) {
+        if(server == null) {return;}
+        Status payload = new Status(Arrays.asList(getArrayOfDeadPlayers()));
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            ServerPlayNetworking.send(player, payload);
         }
     }
 
@@ -138,7 +164,6 @@ public class TotemPlayerHandle {
                 Serverplayer.setGameMode(GameType.ADVENTURE);
                 Serverplayer.setInvulnerable(true);
                 Serverplayer.setInvisible(true);
-                SendStatusUpdate(true);
                 break;
             }
         }
@@ -244,7 +269,6 @@ public class TotemPlayerHandle {
         Serverplayer.setGameMode(GameType.DEFAULT_MODE);
         Serverplayer.setInvulnerable(false);
         Serverplayer.setInvisible(false);
-        SendStatusUpdate(false);
     }
 
     public void RemoveObjects() {
@@ -294,10 +318,5 @@ public class TotemPlayerHandle {
         if(this.IsRemoved()) {
             this.IsSaved = true;
         }
-    }
-
-    public void SendStatusUpdate(boolean status) {
-        Status payload = new Status(status);
-        ServerPlayNetworking.send(this.Serverplayer, payload);
     }
 }
