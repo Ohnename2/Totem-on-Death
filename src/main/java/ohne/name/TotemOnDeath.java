@@ -1,7 +1,7 @@
 package ohne.name;
 
 import net.fabricmc.api.ModInitializer;
-
+import ohne.name.commands.RespawnCommand;
 import ohne.name.networking.InitializePackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,7 @@ public class TotemOnDeath implements ModInitializer {
 		TotemPlayerHandle.initialize();
 		new InitializePackets();
 		new TotemEventHandle();
+		RespawnCommand.initialize();
 		LOGGER.info("Totem-on-Death has been initialized");
 	}
 }
