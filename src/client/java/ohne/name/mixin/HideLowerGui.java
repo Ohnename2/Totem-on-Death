@@ -19,8 +19,8 @@ public class HideLowerGui {
         }
     }
 
-    @Inject(method = "extractCameraOverlays", at = @At("HEAD"), cancellable = true)
-    public void HideHand(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(method = "renderCameraOverlays", at = @At("HEAD"), cancellable = true)
+    public void HideHand(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if(TotemOnDeathClient.IsDead) {
             ci.cancel();
         }
