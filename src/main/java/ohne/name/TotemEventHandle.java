@@ -20,6 +20,9 @@ public class TotemEventHandle {
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (entity instanceof ServerPlayer ServerPlayer) {
+                if(ServerPlayer.level().getServer().isHardcore()) {
+                    return;
+                }
                 if(!TotemPlayerHandle.IsTotemDead(ServerPlayer)) {
                     new TotemPlayerHandle(ServerPlayer);
                 }
