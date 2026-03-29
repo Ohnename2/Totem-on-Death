@@ -3,9 +3,7 @@ package ohne.name;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.world.entity.player.Player;
 import ohne.name.networking.Status;
-
 import java.util.List;
 import java.util.UUID;
 
