@@ -4,5 +4,8 @@
   "text.totem-on-death.bossbar.seconds": "You are dead! Respawn in %d seconds.",
   "text.totem-on-death.bossbar.minutes": "You are dead! Respawn in %d minutes.",
   "text.totem-on-death.bossbar.hours": "You are dead! Respawn in %d hours.",
-  "text.totem-on-death.bossbar.days": "You are dead! Respawn in %d days."
+  "text.totem-on-death.bossbar.days": "You are dead! Respawn in %d days.",
+  "text.totem-on-death.command.respawn.fail.noplayer" : "This command can only be used by players.",
+  "text.totem-on-death.command.respawn.fail.notdead" : "You're not dead.",
+  "text.totem-on-death.command.respawn.success" : "Respawning..."
 }
