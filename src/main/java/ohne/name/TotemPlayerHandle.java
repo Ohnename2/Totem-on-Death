@@ -223,23 +223,23 @@ public class TotemPlayerHandle {
         TickCounter++;
         if(TickCounter % 20 == 0) {
             TimeNow++;
-            long RemainingTimeSecs = RespawnTime - TimeNow;
-            long RemainingTimeMins = RemainingTimeSecs / 60;
-            long RemainingTimeHours = RemainingTimeMins / 60;
-            long RemainingTimeDays = RemainingTimeHours / 24;
+            double RemainingTimeSecs = RespawnTime - TimeNow;
+            double RemainingTimeMins = RemainingTimeSecs / 60;
+            double RemainingTimeHours = RemainingTimeMins / 60;
+            double RemainingTimeDays = RemainingTimeHours / 24;
             if(RemainingTimeDays > 1L) {
-                bossbar.setRemainingTime(RemainingTimeDays, 3);
+                bossbar.setRemainingTime(Math.round(RemainingTimeDays), 3);
             } else if(RemainingTimeHours > 1L) {
-                bossbar.setRemainingTime(RemainingTimeHours, 2);
+                bossbar.setRemainingTime(Math.round(RemainingTimeHours), 2);
             } else if(RemainingTimeMins > 1L) {
-                bossbar.setRemainingTime(RemainingTimeMins, 1);
+                bossbar.setRemainingTime(Math.round(RemainingTimeMins), 1);
             } else if(RemainingTimeSecs > 1L) {
-                bossbar.setRemainingTime(RemainingTimeSecs, 0);
+                bossbar.setRemainingTime(Math.round(RemainingTimeSecs), 0);
             }
             if(RemainingTimeSecs <= 0L) {
                 Respawn();
             }
-            bossbar.setProgressTime((float) (TimeToRespawn - RemainingTimeSecs) / (float) TimeToRespawn);
+            bossbar.setProgressTime((float) (((double) TimeToRespawn - RemainingTimeSecs) / (double) TimeToRespawn));
         }
         if(TickCounter % 1200 == 0) {
             TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
