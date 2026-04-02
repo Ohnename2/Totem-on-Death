@@ -18,6 +18,11 @@ public class TotemConfigHandle {
         if (Files.exists(CONFIG_PATH)) {
             try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
                 CONFIG = GSON.fromJson(reader, TotemConfigData.class);
+                if(CONFIG.Version != 2) {
+                    Files.delete(CONFIG_PATH);
+                    CONFIG = new TotemConfigData();
+                    saveConfig();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
