@@ -5,7 +5,8 @@
   "mixins": [
     "HideLowerGui",
     "HidePlayer",
-    "HideItemInHands"
+    "HideItemInHands",
+    "AddDeathUI"
   ],
   "injectors": {
     "defaultRequire": 1

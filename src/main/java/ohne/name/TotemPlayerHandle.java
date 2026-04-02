@@ -7,10 +7,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import ohne.name.networking.Status;
@@ -21,27 +25,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.UUID;
-
 import static ohne.name.TotemEventHandle.SERVER;
 
 public class TotemPlayerHandle {
     static TotemPlayerHandle[] PlayerHandleObjects = new TotemPlayerHandle[0]; //Saved
 
-    final int NeededTimeOnRespawner = 100;
+    final static int NeededTimeOnRespawner = 100;
 
-    final Long TimeToRespawn = TotemConfigHandle.CONFIG.TimeToRespawnInSeconds;
+    final static Long TimeToRespawn = TotemConfigHandle.CONFIG.TimeToRespawnInSeconds;
 
-    UUID id;
-    ServerPlayer Serverplayer;
-    TotemEntity entity;
-    boolean isInVoid = false;
-    TotemBossbar bossbar;
-    int TicksOnRespawner;
-    Long RespawnTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + TimeToRespawn; // Saved
-    Long TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-    int TickCounter;
-    boolean removed = false;
-    boolean IsSaved = false;
 
     public static void initialize() {}
 
@@ -121,7 +113,7 @@ public class TotemPlayerHandle {
 
     public static void SendPlayerUpdateToAll(MinecraftServer server) {
         if(server == null) {return;}
-        Status payload = new Status(Arrays.asList(getArrayOfDeadPlayers()));
+        Status payload = new Status(Arrays.asList(getArrayOfDeadPlayers()), !TotemEventHandle.AlwaysRespawn);
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             ServerPlayNetworking.send(player, payload);
         }
@@ -129,12 +121,45 @@ public class TotemPlayerHandle {
 
     public static void SendPlayerUpdate(ServerPlayer player) {
         if(player == null) {return;}
-        Status payload = new Status(Arrays.asList(getArrayOfDeadPlayers()));
+        Status payload = new Status(Arrays.asList(getArrayOfDeadPlayers()), !TotemEventHandle.AlwaysRespawn);
         ServerPlayNetworking.send(player, payload);
     }
 
+    public static void dropInventory(ServerPlayer player) {
+        if (!TotemPlayerHandle.IsTotemDead(player) || player.level().getGameRules().get(GameRules.KEEP_INVENTORY)) {
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                ItemStack itemStack = player.getInventory().getItem(i);
+                if (!itemStack.isEmpty() && EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
+                    player.getInventory().removeItemNoUpdate(i);
+                }
+            }
+            player.getInventory().dropAll();
+        } else if(TotemPlayerHandle.IsTotemDead(player)) {
+            TotemPlayerHandle.getPlayerHandle(player).setInventory(player.getInventory());
+        }
+    }
+//Class Specific
+
+    UUID id;
+    ServerPlayer Serverplayer;
+    TotemEntity entity;
+    boolean isInVoid = false;
+    TotemBossbar bossbar;
+    int TicksOnRespawner;
+    Long RespawnTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + TimeToRespawn; // Saved
+    Long TimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+    int TickCounter;
+    boolean removed = false;
+    boolean IsSaved = false;
+    boolean hasTicked = false;
+    public ServerPlayer.RespawnConfig defaultRespawnPos = null;
+    ServerPlayer oldPlayer = null;
+    Inventory oldInventory = null;
+
     public TotemPlayerHandle(@NotNull ServerPlayer playerentity) {
         id = playerentity.getUUID();
+        oldPlayer = playerentity;
+        defaultRespawnPos = playerentity.getRespawnConfig();
         BlockPos deathPos = playerentity.getLastDeathLocation().isPresent() ? playerentity.getLastDeathLocation().get().pos(): BlockPos.ZERO;
         ServerLevel deathLevel = playerentity.level();
         SetRespawnPos(playerentity,deathPos, deathLevel);
@@ -184,7 +209,7 @@ public class TotemPlayerHandle {
         entity.setDeltaMovement(Vec3.ZERO);
     }
 
-    public boolean shouldTickAndHandle(MinecraftServer server) {
+    public boolean shouldTickHandle(MinecraftServer server) {
         if(Serverplayer == null|| Serverplayer.isRemoved()) {
             preparePlayer(server);
             return false;
@@ -202,15 +227,23 @@ public class TotemPlayerHandle {
 
     public void tick(MinecraftServer server) {
         if(this.RemoveOnSave()) {return;}
-        if(!this.shouldTickAndHandle(server)) {return;}
+        if(!this.shouldTickHandle(server)) {return;}
 
         if(Serverplayer.isAlive()) {
-            Serverplayer.setRespawnPosition(null,false);
+            FirstTick();
             Serverplayer.setInvisible(true);
             entity.totemTick(Serverplayer.level(), Serverplayer.position(), Serverplayer.getYRot(), Serverplayer.getXRot());
             PreventPlayerFromFallingIntoTheVoid();
             CheckForRespawnConditions();
             bossbar.tick();
+        }
+    }
+
+    private void FirstTick() {
+        if(hasTicked) {return;}
+        Serverplayer.setRespawnPosition(defaultRespawnPos,false);
+        if(oldInventory != null) {
+            Serverplayer.getInventory().replaceWith(oldInventory);
         }
     }
 
@@ -317,9 +350,14 @@ public class TotemPlayerHandle {
     public void setRemoved() {
         this.removed = true;
     }
+
     public void setSaved() {
         if(this.IsRemoved()) {
             this.IsSaved = true;
         }
+    }
+
+    public void setInventory(Inventory inventory) {
+        oldInventory = inventory;
     }
 }

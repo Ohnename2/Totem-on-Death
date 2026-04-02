@@ -5,33 +5,54 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import ohne.name.networking.TotemRespawnRequest;
 
 
 public class TotemEventHandle {
     public static MinecraftServer SERVER;
+    public static boolean AlwaysRespawn = TotemConfigHandle.CONFIG.AlwaysRespawnInTotemMode;
 
     TotemEventHandle() {
-        ServerLifecycleEvents.SERVER_STARTED.register((server) -> {SERVER = server;});
-        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {SERVER = null;});
+        ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
+            SERVER = server;
+        });
+        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
+            SERVER = null;
+        });
 
-        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-            if (entity instanceof ServerPlayer ServerPlayer) {
-                if(ServerPlayer.level().getServer().isHardcore()) {
+        if (AlwaysRespawn) {
+            ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+                if (entity instanceof ServerPlayer ServerPlayer) {
+                    if (ServerPlayer.level().getServer().isHardcore()) {
+                        return;
+                    }
+                    if (!TotemPlayerHandle.IsTotemDead(ServerPlayer)) {
+                        new TotemPlayerHandle(ServerPlayer);
+                    }
+                }
+            });
+        } else {
+            ServerPlayNetworking.registerGlobalReceiver(TotemRespawnRequest.ID, (payload, context) -> {
+                ServerPlayer player = context.player();
+                if (player.level().getServer().isHardcore()) {
                     return;
                 }
-                if(!TotemPlayerHandle.IsTotemDead(ServerPlayer)) {
-                    new TotemPlayerHandle(ServerPlayer);
+                if (!TotemPlayerHandle.IsTotemDead(player)) {
+                    new TotemPlayerHandle(player);
                 }
-            }
-        });
+            });
+        }
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (TotemPlayerHandle playerHandleObject : TotemPlayerHandle.getPlayerHandleObjects()) {
-                if(playerHandleObject == null) {continue;}
+                if (playerHandleObject == null) {
+                    continue;
+                }
                 playerHandleObject.tick(server);
             }
         });
@@ -39,8 +60,10 @@ public class TotemEventHandle {
         ServerPlayerEvents.JOIN.register(TotemPlayerHandle::SendPlayerUpdate);
 
         ServerPlayerEvents.LEAVE.register(serverPlayer -> {
-            TotemPlayerHandle obj =  TotemPlayerHandle.getPlayerHandle(serverPlayer);
-            if(obj == null) {return;}
+            TotemPlayerHandle obj = TotemPlayerHandle.getPlayerHandle(serverPlayer);
+            if (obj == null) {
+                return;
+            }
             obj.setRemoved();
         });
 
@@ -50,7 +73,7 @@ public class TotemEventHandle {
         UseItemCallback.EVENT.register((player, world, hand) -> FailInteractionWhenDead(player));
     }
 
-    private InteractionResult FailInteractionWhenDead(Player player) {
+    private InteractionResult FailInteractionWhenDead (Player player){
         if (player instanceof ServerPlayer serverPlayer) {
             if (TotemPlayerHandle.IsTotemDead(serverPlayer)) {
                 return InteractionResult.FAIL;
@@ -58,5 +81,4 @@ public class TotemEventHandle {
         }
         return InteractionResult.PASS;
     }
-
 }
