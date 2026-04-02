@@ -28,7 +28,6 @@ public class EntityDataSave {
         TotemPlayerHandle playerHandleObject = TotemPlayerHandle.getPlayerHandle(serverPlayer);
         if(playerHandleObject == null) {
             valueOutput.putBoolean(TotemOnDeath.MOD_ID + ":IsDead", false);
-            valueOutput.putLong(TotemOnDeath.MOD_ID + ":RespawnTime", 0L);
             return;
         }
         valueOutput.putBoolean(TotemOnDeath.MOD_ID + ":IsDead", true);
