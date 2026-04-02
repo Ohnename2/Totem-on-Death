@@ -40,7 +40,7 @@ public abstract class AddDeathUI extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
-        if (!TotemOnDeathClient.souldShowDeathUI) {
+        if (!TotemOnDeathClient.souldShowDeathUI || player.level().getLevelData().isHardcore()) {
             return;
         }
         Component message = Component.translatable("deathScreen.totem-on-death.respawn");
