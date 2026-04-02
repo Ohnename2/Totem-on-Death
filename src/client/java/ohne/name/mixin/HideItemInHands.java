@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class HideItemInHands {
 
     @Inject(method = "renderItem", at = @At("HEAD"), cancellable = true)
-    public void abortRenderring(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+    public void abortRendering(LivingEntity mob, ItemStack itemStack, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
         if(mob instanceof LocalPlayer) {
             if(TotemOnDeathClient.IsDead) {
                 ci.cancel();
