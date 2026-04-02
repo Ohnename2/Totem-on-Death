@@ -3,6 +3,8 @@ package ohne.name;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import ohne.name.networking.Status;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +16,8 @@ public class TotemOnDeathClient implements ClientModInitializer {
 	public static boolean souldShowDeathUI = false;
 	@Override
 	public void onInitializeClient() {
+		BlockRenderLayerMap.putBlock(TotemBlocks.RESPAWNER, ChunkSectionLayer.TRANSLUCENT);
+
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			LocalPlayerUuid = client.getGameProfile().id();
 		});
