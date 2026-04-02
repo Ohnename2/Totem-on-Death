@@ -11,6 +11,7 @@ public class TotemOnDeathClient implements ClientModInitializer {
 	public static List<UUID> DeadPlayers =  null;
 	public static UUID LocalPlayerUuid = null;
 	public static boolean IsDead = false;
+	public static boolean souldShowDeathUI = false;
 	@Override
 	public void onInitializeClient() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
@@ -22,6 +23,7 @@ public class TotemOnDeathClient implements ClientModInitializer {
 			setIsDead();
 		});
 		ClientPlayNetworking.registerGlobalReceiver(Status.ID, (payload, context) -> {
+			souldShowDeathUI = payload.showDeathUI();
 			DeadPlayers = payload.DeadPlayers();
 			setIsDead();
 		});

@@ -7,5 +7,6 @@
   "text.totem-on-death.bossbar.days": "Du bist Tot! Wiederbelebung in %d Tagen.",
   "text.totem-on-death.command.respawn.fail.noplayer" : "Dieser Befehl kann nur von Spielern ausgeführt werden.",
   "text.totem-on-death.command.respawn.fail.notdead" : "Du bist nicht Tot.",
-  "text.totem-on-death.command.respawn.success" : "Respawne..."
+  "text.totem-on-death.command.respawn.success" : "Respawne...",
+  "deathScreen.totem-on-death.respawn" : "Totem Respawn"
 }
