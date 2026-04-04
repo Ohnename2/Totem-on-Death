@@ -29,6 +29,7 @@
 			"environment": "client"
 		}
 	],
+	"accessWidener": "totem-on-death.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.18.4",
 		"minecraft": "~26.1",

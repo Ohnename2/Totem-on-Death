@@ -127,12 +127,8 @@ public class TotemPlayerHandle {
 
     public static void dropInventory(ServerPlayer player) {
         if (!TotemPlayerHandle.IsTotemDead(player) && !player.level().getGameRules().get(GameRules.KEEP_INVENTORY)) {
-            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                ItemStack itemStack = player.getInventory().getItem(i);
-                if (!itemStack.isEmpty() && EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
-                    player.getInventory().removeItemNoUpdate(i);
-                }
-            }
+            player.destroyVanishingCursedItems();
+            //
             player.getInventory().dropAll();
         } else if(TotemPlayerHandle.IsTotemDead(player)) {
             TotemPlayerHandle.getPlayerHandle(player).setInventory(player.getInventory());
