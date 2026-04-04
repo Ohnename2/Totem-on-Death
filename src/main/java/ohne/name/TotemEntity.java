@@ -60,6 +60,7 @@ public class TotemEntity extends ItemEntity {
     public void totemTick(ServerLevel level, Vec3 targetPos, float YRot, float XRot) {
         this.setPortalCooldown(20000);
         this.teleportTo(level, targetPos.x, targetPos.y, targetPos.z,  EnumSet.noneOf(Relative.class) , YRot, XRot, false);
+        this.setDeltaMovement(Vec3.ZERO);
         this.needsSync = true;
     }
 }
