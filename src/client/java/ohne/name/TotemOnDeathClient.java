@@ -3,6 +3,9 @@ package ohne.name;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.screens.MenuScreens;
+import ohne.name.GUI.CustomChestGui;
+import ohne.name.GUI.TotemCustomMenuType;
 import ohne.name.networking.Status;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +17,9 @@ public class TotemOnDeathClient implements ClientModInitializer {
 	public static boolean souldShowDeathUI = false;
 	@Override
 	public void onInitializeClient() {
+		MenuScreens.register(TotemCustomMenuType.CUSTOM_TOTEM_CHEST, CustomChestGui::new);
+
+
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			LocalPlayerUuid = client.getGameProfile().id();
 		});
@@ -28,6 +34,7 @@ public class TotemOnDeathClient implements ClientModInitializer {
 			setIsDead();
 		});
 	}
+
 	public static void setIsDead() {
 		if(LocalPlayerUuid == null)	{
 			IsDead = false;
