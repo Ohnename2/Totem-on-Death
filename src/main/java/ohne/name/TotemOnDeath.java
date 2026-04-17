@@ -1,6 +1,11 @@
 package ohne.name;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.MenuType;
+import ohne.name.GUI.TotemCustomMenuType;
 import ohne.name.commands.RespawnCommand;
 import ohne.name.networking.InitializePackets;
 import org.slf4j.Logger;
@@ -16,6 +21,7 @@ public class TotemOnDeath implements ModInitializer {
 		TotemConfigHandle.loadConfig();
 		TotemBlocks.initialize();
 		TotemPlayerHandle.initialize();
+		TotemCustomMenuType.initialize();
 		new InitializePackets();
 		new TotemEventHandle();
 		RespawnCommand.initialize();

@@ -10,11 +10,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import ohne.name.networking.Status;
@@ -125,15 +122,7 @@ public class TotemPlayerHandle {
         ServerPlayNetworking.send(player, payload);
     }
 
-    public static void dropInventory(ServerPlayer player) {
-        if (!TotemPlayerHandle.IsTotemDead(player) && !player.level().getGameRules().get(GameRules.KEEP_INVENTORY)) {
-            player.destroyVanishingCursedItems();
-            //
-            player.getInventory().dropAll();
-        } else if(TotemPlayerHandle.IsTotemDead(player)) {
-            TotemPlayerHandle.getPlayerHandle(player).setInventory(player.getInventory());
-        }
-    }
+
 //Class Specific
 
     UUID id;
