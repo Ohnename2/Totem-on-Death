@@ -8,5 +8,6 @@
   "text.totem-on-death.command.respawn.fail.noplayer" : "This command can only be used by players.",
   "text.totem-on-death.command.respawn.fail.notdead" : "You're not dead.",
   "text.totem-on-death.command.respawn.success" : "Respawning...",
-  "deathScreen.totem-on-death.respawn" : "Totem Respawn"
+  "deathScreen.totem-on-death.respawn" : "Totem Respawn",
+  "ui.totem-on-death.custom.chest": "Select %d Stack(s) to destroy."
 }
