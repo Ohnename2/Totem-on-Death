@@ -15,6 +15,6 @@ public class DropItem {
     @Inject(method = "respawn", at = @At("TAIL"))
     public void dropItems(ServerPlayer serverPlayer, boolean keepAllPlayerData, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
         ServerPlayer newPlayer = cir.getReturnValue();
-        RespawnHandle.dropInventory(serverPlayer, newPlayer);
+        new RespawnHandle(serverPlayer, newPlayer);
     }
 }

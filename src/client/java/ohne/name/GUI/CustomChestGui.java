@@ -24,4 +24,9 @@ public class CustomChestGui extends AbstractContainerScreen<CustomChest> {
         graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, xo, yo, 0.0F, 0.0F, this.imageWidth, this.containerRows * 18 + 17, 256, 256);
         graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, xo, yo + this.containerRows * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
     }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
 }

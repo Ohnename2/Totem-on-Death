@@ -25,6 +25,7 @@ public class CustomChest extends ChestMenu {
     private Container processedContainer;
     private final Component Reset_Item_Name = Component.literal("Reset");
     private final Component Confirm_Item_Name = Component.literal("Confirm");
+    public RespawnHandle RespawnHandle;
 
     public CustomChest(int containerId, Inventory inventory, int DeathCount) {
         super(TotemCustomMenuType.CUSTOM_TOTEM_CHEST, containerId, inventory, new SimpleContainer(9 * 5), 5);
@@ -36,6 +37,10 @@ public class CustomChest extends ChestMenu {
         this.SetUpChestItem(Confirm_Item, Confirm_Item_Name);
         this.SetUpChestItem(Confirm_Item_Confirmable, Confirm_Item_Name);
         this.SaveContainer();
+    }
+
+    public void SetRespawnHandle(RespawnHandle RespawnHandle) {
+        this.RespawnHandle = RespawnHandle;
     }
 
     private void SetUpChestItem(ItemStack itemStack, Component component) {
@@ -90,8 +95,9 @@ public class CustomChest extends ChestMenu {
                 this.LoadContainer();
             } else if (Objects.equals(item.get(DataComponents.CUSTOM_NAME), Confirm_Item_Name)) {
                 if(this.IsComplete() && player instanceof ServerPlayer) {
-                    //respawn logic
-                    System.out.println("feuer");
+                    if(RespawnHandle != null) {
+                        RespawnHandle.dropItems(this.getContainer());
+                    }
                 }
             }
             return;
