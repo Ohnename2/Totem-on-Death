@@ -10,6 +10,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import ohne.name.RespawnHandle;
@@ -128,7 +130,7 @@ public class CustomChest extends ChestMenu {
     }
 
     public boolean IsComplete() {
-        return selectedStacks >= neededStacks || exsistingStacks <= neededStacks;
+        return selectedStacks >= neededStacks || exsistingStacks <= selectedStacks;
     }
 
     @Override
