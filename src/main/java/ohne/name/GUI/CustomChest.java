@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
@@ -20,7 +21,7 @@ public class CustomChest extends ChestMenu {
     private final ItemStack Confirm_Item = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
     private final ItemStack Confirm_Item_Confirmable = new ItemStack(Items.LIME_STAINED_GLASS_PANE);
     private final ItemStack Reset_Item = new ItemStack(Items.RED_STAINED_GLASS_PANE);
-    private int exsistingStacks = 0;
+    private int exsistingStacks;
     private final int neededStacks;
     private int selectedStacks = 0;
     private Container processedContainer;
@@ -38,6 +39,7 @@ public class CustomChest extends ChestMenu {
         this.SetUpChestItem(Confirm_Item, Confirm_Item_Name);
         this.SetUpChestItem(Confirm_Item_Confirmable, Confirm_Item_Name);
         this.SaveContainer();
+        this.UpdateConfirmButton();
     }
 
     public void SetRespawnHandle(RespawnHandle RespawnHandle) {
@@ -81,7 +83,7 @@ public class CustomChest extends ChestMenu {
             container.setItem(i, processedContainer.getItem(i));
         }
         selectedStacks = 0;
-
+        this.UpdateConfirmButton();
     }
 
     @Override
@@ -112,10 +114,17 @@ public class CustomChest extends ChestMenu {
         Selected_Item.set(DataComponents.CUSTOM_NAME, item.getDisplayName());
         Selected_Item.set(TotemCustomMenuType.IS_FROM_CUSTOM_CHEST, true);
         selectedStacks++;
+        this.UpdateConfirmButton();
+        this.getContainer().setItem(slotIndex, Selected_Item);
+    }
+
+    private void UpdateConfirmButton() {
         if(this.IsComplete()) {
             this.getContainer().setItem(44, Confirm_Item_Confirmable);
+        } else {
+            this.getContainer().setItem(44, Confirm_Item);
         }
-        this.getContainer().setItem(slotIndex, Selected_Item);
+
     }
 
     public boolean IsComplete() {
