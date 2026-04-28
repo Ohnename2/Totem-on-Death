@@ -18,11 +18,7 @@ public class TotemOnDeathClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		MenuScreens.register(TotemCustomMenuType.CUSTOM_TOTEM_CHEST, CustomChestGui::new);
-
-
-		BlockRenderLayerMap.putBlock(TotemBlocks.RESPAWNER, ChunkSectionLayer.TRANSLUCENT);
-
-		MenuScreens.register(TotemCustomMenuType.CUSTOM_TOTEM_CHEST, CustomChestGui::new);
+		//BlockRenderLayerMap.putBlock(TotemBlocks.RESPAWNER, ChunkSectionLayer.TRANSLUCENT);
 
 
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {

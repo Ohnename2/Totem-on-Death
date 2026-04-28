@@ -1,6 +1,6 @@
 package ohne.name.GUI;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jspecify.annotations.Nullable;
 
-public class CustomChestMenuProvider implements ExtendedMenuProvider<Integer> {
+public class CustomChestMenuProvider implements ExtendedScreenHandlerFactory<Integer> {
 
     private final int DeathCount;
 

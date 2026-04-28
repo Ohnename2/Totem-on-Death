@@ -13,14 +13,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class HideLowerGui {
 
     @Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"), cancellable = true)
-    public void HideGui(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    public void HideGui(GuiGraphics graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if(TotemOnDeathClient.IsDead) {
             ci.cancel();
         }
     }
 
     @Inject(method = "renderCameraOverlays", at = @At("HEAD"), cancellable = true)
-    public void HideHand(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    public void HideHand(GuiGraphics graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if(TotemOnDeathClient.IsDead) {
             ci.cancel();
         }
