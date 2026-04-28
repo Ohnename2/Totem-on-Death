@@ -3,7 +3,9 @@ package ohne.name;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import ohne.name.GUI.CustomChestGui;
 import ohne.name.GUI.TotemCustomMenuType;
 import ohne.name.networking.Status;
@@ -18,7 +20,7 @@ public class TotemOnDeathClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		MenuScreens.register(TotemCustomMenuType.CUSTOM_TOTEM_CHEST, CustomChestGui::new);
-		//BlockRenderLayerMap.putBlock(TotemBlocks.RESPAWNER, ChunkSectionLayer.TRANSLUCENT);
+		BlockRenderLayerMap.putBlock(TotemBlocks.RESPAWNER, ChunkSectionLayer.TRANSLUCENT);
 
 
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
