@@ -6,6 +6,9 @@ import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
+import net.minecraft.stats.Stats;
 import ohne.name.TotemOnDeathClient;
 import ohne.name.networking.TotemRespawnRequest;
 import org.spongepowered.asm.mixin.Final;
@@ -13,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.UUID;
@@ -51,5 +55,11 @@ public abstract class AddDeathUI extends Screen {
             button.active = false;
         }).bounds(this.width / 2 - 100, this.height / 4 + 48, 200, 20).build()));
         this.setButtonsActive(false);
+    }
+
+    @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;", ordinal = 1))
+    public MutableComponent changeRespawnInfo(String key) {
+        this.minecraft.getConnection().send(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.REQUEST_STATS));
+        return Component.translatable("ui.totem-on-death.custom.respawn.text", player.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS)) + 1);
     }
 }
