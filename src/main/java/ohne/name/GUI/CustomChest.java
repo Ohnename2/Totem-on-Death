@@ -118,6 +118,7 @@ public class CustomChest extends ChestMenu {
         selectedStacks++;
         this.UpdateConfirmButton();
         this.getContainer().setItem(slotIndex, Selected_Item);
+        this.broadcastChanges();
     }
 
     private void UpdateConfirmButton() {
