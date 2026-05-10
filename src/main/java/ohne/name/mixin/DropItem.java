@@ -15,6 +15,10 @@ public class DropItem {
     @Inject(method = "respawn", at = @At("TAIL"))
     public void dropItems(ServerPlayer serverPlayer, boolean keepAllPlayerData, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
         ServerPlayer newPlayer = cir.getReturnValue();
-        new RespawnHandle(serverPlayer, newPlayer);
+        System.out.println(removalReason.toString().equals("CHANGED_DIMENSION"));
+        if (!removalReason.toString().equals("CHANGED_DIMENSION"))
+        {
+            new RespawnHandle(serverPlayer, newPlayer);
+        }
     }
 }
