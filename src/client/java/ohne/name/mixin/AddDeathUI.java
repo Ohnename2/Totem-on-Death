@@ -60,6 +60,6 @@ public abstract class AddDeathUI extends Screen {
     @Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;)Lnet/minecraft/network/chat/MutableComponent;", ordinal = 1))
     public MutableComponent changeRespawnInfo(String key) {
         this.minecraft.getConnection().send(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.REQUEST_STATS));
-        return Component.translatable("ui.totem-on-death.custom.respawn.text", player.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS)) + 1);
+        return Component.translatable("ui.totem-on-death.custom.respawn.text", TotemOnDeathClient.ItemsToDestroy);
     }
 }

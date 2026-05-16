@@ -8,7 +8,10 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import ohne.name.GUI.CustomChestGui;
 import ohne.name.GUI.TotemCustomMenuType;
+import ohne.name.networking.ItemRemoveAmount;
 import ohne.name.networking.Status;
+import ohne.name.networking.TotemRespawnRequest;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +20,7 @@ public class TotemOnDeathClient implements ClientModInitializer {
 	public static UUID LocalPlayerUuid = null;
 	public static boolean IsDead = false;
 	public static boolean souldShowDeathUI = false;
+	public static int ItemsToDestroy = -1;
 	@Override
 	public void onInitializeClient() {
 		MenuScreens.register(TotemCustomMenuType.CUSTOM_TOTEM_CHEST, CustomChestGui::new);
@@ -35,6 +39,9 @@ public class TotemOnDeathClient implements ClientModInitializer {
 			souldShowDeathUI = payload.showDeathUI();
 			DeadPlayers = payload.DeadPlayers();
 			setIsDead();
+		});
+		ClientPlayNetworking.registerGlobalReceiver(ItemRemoveAmount.ID, (payload, context) -> {
+			ItemsToDestroy = payload.amount();
 		});
 	}
 	public static void setIsDead() {
