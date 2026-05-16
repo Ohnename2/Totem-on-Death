@@ -41,16 +41,6 @@ public class TotemPlayerHandle {
         return PlayerHandleObjects;
     }
 
-    public static boolean IsTotemDead(TotemPlayerHandle playerObject) {
-        for (TotemPlayerHandle currentPlayerObject : PlayerHandleObjects) {
-            if(currentPlayerObject == null) {continue;}
-            if (currentPlayerObject == playerObject) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static boolean IsTotemDead(@NonNull ServerPlayer player) {
         UUID playeruuid = player.getUUID();
         for (TotemPlayerHandle PlayerHandleObject : PlayerHandleObjects) {
