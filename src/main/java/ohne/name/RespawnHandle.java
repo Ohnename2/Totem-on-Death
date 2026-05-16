@@ -1,7 +1,7 @@
 package ohne.name;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,8 +9,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 import ohne.name.GUI.CustomChest;
 import ohne.name.GUI.CustomChestMenuProvider;
 import ohne.name.GUI.TotemCustomMenuType;
-
-import java.awt.*;
+import ohne.name.networking.ItemRemoveAmount;
 
 public class RespawnHandle {
     ServerPlayer Player;
@@ -22,10 +21,14 @@ public class RespawnHandle {
         newPlayer.getInventory().replaceWith(player.getInventory());
         if (!TotemPlayerHandle.IsTotemDead(player) && !player.level().getGameRules().get(GameRules.KEEP_INVENTORY)) {
             newPlayer.destroyVanishingCursedItems();
-            newPlayer.openMenu(new CustomChestMenuProvider(newPlayer.getStats().getValue(Stats.CUSTOM.get(Stats.DEATHS))));
+            int itemDeathCount = PlayerItemRespawnCount.get(newPlayer.getUUID());
+            newPlayer.openMenu(new CustomChestMenuProvider(itemDeathCount));
             if (newPlayer.containerMenu instanceof CustomChest menu) {
                 menu.SetRespawnHandle(this);
             }
+            PlayerItemRespawnCount.set(newPlayer.getUUID(), itemDeathCount + 1);
+            ItemRemoveAmount payload = new ItemRemoveAmount(itemDeathCount + 1);
+            ServerPlayNetworking.send(newPlayer, payload);
             newPlayer.getInventory().replaceWith(new Inventory(newPlayer, new EntityEquipment()));
 
         }

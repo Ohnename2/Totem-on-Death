@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import ohne.name.networking.ItemRemoveAmount;
 import ohne.name.networking.TotemRespawnRequest;
 
 
@@ -57,7 +58,11 @@ public class TotemEventHandle {
             }
         });
 
-        ServerPlayerEvents.JOIN.register(TotemPlayerHandle::SendPlayerUpdate);
+        ServerPlayerEvents.JOIN.register(serverPlayer -> {
+            TotemPlayerHandle.SendPlayerUpdate(serverPlayer);
+            ItemRemoveAmount payload = new ItemRemoveAmount(PlayerItemRespawnCount.get(serverPlayer.getUUID()));
+            ServerPlayNetworking.send(serverPlayer, payload);
+        });
 
         ServerPlayerEvents.LEAVE.register(serverPlayer -> {
             TotemPlayerHandle obj = TotemPlayerHandle.getPlayerHandle(serverPlayer);

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 public class InitializePackets {
     public InitializePackets() {
         PayloadTypeRegistry.clientboundPlay().register(Status.ID, Status.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ItemRemoveAmount.ID, ItemRemoveAmount.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(TotemRespawnRequest.ID, TotemRespawnRequest.CODEC);
     }
 }
