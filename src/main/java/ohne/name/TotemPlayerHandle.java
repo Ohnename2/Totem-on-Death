@@ -132,7 +132,6 @@ public class TotemPlayerHandle {
     boolean hasTicked = false;
     public ServerPlayer.RespawnConfig defaultRespawnPos = null;
     ServerPlayer oldPlayer = null;
-    Inventory oldInventory = null;
 
     public TotemPlayerHandle(@NotNull ServerPlayer playerentity) {
         id = playerentity.getUUID();
@@ -219,10 +218,8 @@ public class TotemPlayerHandle {
 
     private void firstTick() {
         if(hasTicked) {return;}
+        hasTicked = true;
         Serverplayer.setRespawnPosition(defaultRespawnPos,false);
-        if(oldInventory != null) {
-            Serverplayer.getInventory().replaceWith(oldInventory);
-        }
     }
 
     private void CheckForRespawnConditions() {
@@ -331,10 +328,6 @@ public class TotemPlayerHandle {
         if(this.IsRemoved()) {
             this.IsSaved = true;
         }
-    }
-
-    public void setInventory(Inventory inventory) {
-        oldInventory = inventory;
     }
 
     private int getDeadlyY(ResourceKey<Level> dimension) {
