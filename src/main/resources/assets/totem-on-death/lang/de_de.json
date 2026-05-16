@@ -10,5 +10,5 @@
   "text.totem-on-death.command.respawn.success" : "Respawne...",
   "deathScreen.totem-on-death.respawn" : "Totem Respawn",
   "ui.totem-on-death.custom.chest": "Wähle %d Stack(s) zum Zerstören.",
-  "ui.totem-on-death.custom.respawn.text": "Wiederbeleben (Zerstöre %d Stack(s))"
+  "ui.totem-on-death.custom.respawn.text": "Item Wiederbeleben (Zerstöre %d Stack(s))"
 }
