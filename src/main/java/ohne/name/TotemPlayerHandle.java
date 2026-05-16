@@ -215,7 +215,7 @@ public class TotemPlayerHandle {
         if(!this.shouldTickHandle(server)) {return;}
 
         if(Serverplayer.isAlive()) {
-            FirstTick();
+            firstTick();
             Serverplayer.setInvisible(true);
             entity.totemTick(Serverplayer.level(), Serverplayer.position(), Serverplayer.getYRot(), Serverplayer.getXRot());
             PreventPlayerFromFallingIntoTheVoid();
@@ -224,7 +224,7 @@ public class TotemPlayerHandle {
         }
     }
 
-    private void FirstTick() {
+    private void firstTick() {
         if(hasTicked) {return;}
         Serverplayer.setRespawnPosition(defaultRespawnPos,false);
         if(oldInventory != null) {
