@@ -3,6 +3,7 @@ package ohne.name;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
@@ -18,6 +20,7 @@ import ohne.name.networking.Status;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -158,8 +161,8 @@ public class TotemPlayerHandle {
     }
 
     private void SetRespawnPos(ServerPlayer player, BlockPos deathPos, ServerLevel deathlevel) {
-        if(deathlevel.dimension().toString().equals(ServerLevel.END.toString()) && deathPos.getY() <= 0) {
-            player.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(deathlevel.dimension(), deathPos.atY(1)),0,0),true),false);
+        if(deathPos.getY() <= getDeadlyY(deathlevel.dimension()) + 16) {
+            player.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(deathlevel.dimension(), deathPos.atY(getDeadlyY(deathlevel.dimension()) + 32)),0,0),true),false);
             return;
         }
         player.setRespawnPosition(new ServerPlayer.RespawnConfig(new LevelData.RespawnData(new GlobalPos(deathlevel.dimension(), deathPos),0,0),true),false);
@@ -308,19 +311,17 @@ public class TotemPlayerHandle {
     }
 
     private void PreventPlayerFromFallingIntoTheVoid() {
-        if(Serverplayer.level().dimension().identifier().toString().equals("minecraft:the_end")) {
-            if(Serverplayer.getY() <= 1 && !isInVoid) {
-                isInVoid = true;
-                if(Serverplayer.getDeltaMovement().y < 0) {
-                    Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().multiply(1, -1.9, 1));
-                    Serverplayer.hurtMarked = true;
-                    Serverplayer.needsSync = true;
-                } else if (Serverplayer.getDeltaMovement().y == 0) {
-                    Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().add(0, 40,0));
-                }
-            } else {
-                isInVoid = false;
+        if(Serverplayer.getY() <= getDeadlyY(Serverplayer.level().dimension()) + 16 && !isInVoid) {
+            isInVoid = true;
+            if(Serverplayer.getDeltaMovement().y < 0d) {
+                Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().multiply(1, -2.1, 1));
+                Serverplayer.hurtMarked = true;
+                Serverplayer.needsSync = true;
+            } else if (Serverplayer.getDeltaMovement().y == 0d) {
+                Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().add(0, 40,0));
             }
+        } else {
+            isInVoid = false;
         }
     }
 
@@ -344,5 +345,12 @@ public class TotemPlayerHandle {
 
     public void setInventory(Inventory inventory) {
         oldInventory = inventory;
+    }
+
+    private int getDeadlyY(ResourceKey<Level> dimension) {
+        if(dimension.identifier().toString().equals("minecraft:overworld")) {
+            return -128;
+        }
+        return -64;
     }
 }
