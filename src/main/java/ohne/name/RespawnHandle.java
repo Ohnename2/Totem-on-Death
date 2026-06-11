@@ -19,7 +19,7 @@ public class RespawnHandle {
         this.Player = player;
         this.newPlayer = newPlayer;
         newPlayer.getInventory().replaceWith(player.getInventory());
-        if (!TotemPlayerHandle.IsTotemDead(player) && !player.level().getGameRules().get(GameRules.KEEP_INVENTORY)) {
+        if (!TotemPlayerHandle.IsTotemDead(player) && !player.level().getGameRules().get(GameRules.KEEP_INVENTORY) && !player.level().getServer().isHardcore()) {
             newPlayer.destroyVanishingCursedItems();
             int itemDeathCount = PlayerItemRespawnCount.get(newPlayer.getUUID());
             newPlayer.openMenu(new CustomChestMenuProvider(itemDeathCount));
