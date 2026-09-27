@@ -6,8 +6,7 @@
     "HideLowerGui",
     "HidePlayer",
     "HideItemInHands",
-    "AddDeathUI",
-    "PreventDroppingHotbar"
+    "AddDeathUI"
   ],
   "injectors": {
     "defaultRequire": 1
