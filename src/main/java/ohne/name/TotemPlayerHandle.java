@@ -297,7 +297,7 @@ public class TotemPlayerHandle {
     }
 
     private void PreventPlayerFromFallingIntoTheVoid() {
-        if(Serverplayer.getY() <= getDeadlyY(Serverplayer.level().dimension()) + 16 && !isInVoid) {
+        if(Serverplayer.getY() <= getDeadlyY(Serverplayer.level().dimension()) + 20 && !isInVoid) {
             isInVoid = true;
             if(Serverplayer.getDeltaMovement().y < 0d) {
                 Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().multiply(1, -2.1, 1));
