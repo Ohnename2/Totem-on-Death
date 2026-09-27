@@ -36,7 +36,7 @@ public class TotemEntity extends ItemEntity {
         this.setNoGravity(true);
         this.setUnlimitedLifetime();
         this.setGlowingTag(true);
-        this.setInvulnerable(true);
+        this.setPermanentlyInvulnerable(true);
         this.canUsePortal(false);
         this.setCustomName(displayname);
         this.setCustomNameVisible(true);

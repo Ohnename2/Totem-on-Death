@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -167,7 +166,7 @@ public class TotemPlayerHandle {
                 Serverplayer = (ServerPlayer) Level.getPlayerByUUID(id);
                 assert Serverplayer != null;
                 Serverplayer.setGameMode(GameType.ADVENTURE);
-                Serverplayer.setInvulnerable(true);
+                Serverplayer.setPermanentlyInvulnerable(true);
                 Serverplayer.setInvisible(true);
                 break;
             }
@@ -278,7 +277,7 @@ public class TotemPlayerHandle {
         this.RemoveObjects();
         bossbar.removeBossbar();
         Serverplayer.setGameMode(GameType.DEFAULT_MODE);
-        Serverplayer.setInvulnerable(false);
+        Serverplayer.setPermanentlyInvulnerable(false);
         Serverplayer.setInvisible(false);
     }
 
@@ -302,7 +301,7 @@ public class TotemPlayerHandle {
             isInVoid = true;
             if(Serverplayer.getDeltaMovement().y < 0d) {
                 Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().multiply(1, -2.1, 1));
-                Serverplayer.hurtMarked = true;
+                Serverplayer.syncVelocity = true;
                 Serverplayer.needsSync = true;
             } else if (Serverplayer.getDeltaMovement().y == 0d) {
                 Serverplayer.setDeltaMovement(Serverplayer.getDeltaMovement().add(0, 40,0));
