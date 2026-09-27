@@ -5,13 +5,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import ohne.name.RespawnHandle;
@@ -19,10 +16,10 @@ import ohne.name.RespawnHandle;
 import java.util.Objects;
 
 public class CustomChest extends ChestMenu {
-    private final ItemStack Empty_Item = new ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE);
-    private final ItemStack Confirm_Item = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
-    private final ItemStack Confirm_Item_Confirmable = new ItemStack(Items.LIME_STAINED_GLASS_PANE);
-    private final ItemStack Reset_Item = new ItemStack(Items.RED_STAINED_GLASS_PANE);
+    private final ItemStack Empty_Item = new ItemStack(Items.STAINED_GLASS_PANE.lightGray());
+    private final ItemStack Confirm_Item = new ItemStack(Items.STAINED_GLASS_PANE.gray());
+    private final ItemStack Confirm_Item_Confirmable = new ItemStack(Items.STAINED_GLASS_PANE.lime());
+    private final ItemStack Reset_Item = new ItemStack(Items.STAINED_GLASS_PANE.red());
     private int exsistingStacks;
     private final int neededStacks;
     private int selectedStacks = 0;
