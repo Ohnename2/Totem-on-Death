@@ -12,7 +12,6 @@ public class PlayerItemRespawnCount {
     }
 
     public static int get(UUID uuid) {
-        System.out.println(dataMap.getOrDefault(uuid, 0));
         return dataMap.getOrDefault(uuid, 0);
     }
 
